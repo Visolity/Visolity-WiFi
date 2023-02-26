@@ -1,6 +1,5 @@
 import express from "express";
 import session from 'express-session';
-import cookieParser from 'cookie-parser';
 import path from 'path';
 const __dirname = path.resolve();
 const app = express();
@@ -17,7 +16,7 @@ webserver.start = async () => {
         resave: false,
         saveUninitialized: false,
         cookie: {
-            secure: false, // set this to true on production
+            secure: false,
         }
     }));
 
@@ -26,12 +25,10 @@ webserver.start = async () => {
     app.set('view engine', 'hbs');
 
     app.use(express.json());
-    //app.use(cookieParser());
     app.use(express.urlencoded({ extended: false }));
     app.use(express.static(path.join(__dirname, 'src/webserver/public')));
 
     app.use('/', indexRouter);
-    //app.use('/users', indexRouter);
     app.use('/auth', authRouter);
 
     // catchAll op 404

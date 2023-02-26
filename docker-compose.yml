@@ -9,4 +9,5 @@ services:
     environment:
       NODE_ENV: production
     ports:
+      - 80:80
       - 1812:1812/udp

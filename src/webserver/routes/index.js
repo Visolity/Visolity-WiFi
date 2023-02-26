@@ -17,7 +17,7 @@ function isAuthenticated(req, res, next) {
     next();
 };
 
-router.get('/', 
+router.get('/',
     isAuthenticated, // check if user is authenticated
     async function (req, res, next) {
 
@@ -34,12 +34,12 @@ router.get('/',
             else {
                 p12file = CertificateGeneration.CreateHostCert(
                     req.session.account.idTokenClaims.name,
-                    req.session.account.idTokenClaims.preferred_username, 
+                    req.session.account.idTokenClaims.preferred_username,
                     [req.session.account.idTokenClaims.preferred_username]);
                 fs.writeFileSync(path, JSON.stringify(p12file))
             }
-        
-        } catch(err) {
+
+        } catch (err) {
             console.error(err)
         }
 
@@ -56,17 +56,17 @@ router.get('/',
 
 router.get('/download/',
     isAuthenticated, // check if user is authenticated
-    
+
     async function (req, res, next) {
 
         if (req.query.type === 'apple') {
-        
+
             const profile = ProfileGeneration.Create(req.session.account.idTokenClaims.name, req.session.account.idTokenClaims.preferred_username, req.query.type);
-        
+
             res.contentType('text/plain');
             res.status(200)
-            .attachment(`Visolity-Wifi.mobileconfig`)
-            .send(profile)
+                .attachment(`Visolity-Wifi.mobileconfig`)
+                .send(profile)
         }
 
         else {
@@ -80,20 +80,8 @@ router.get('/download/',
 
             res.contentType('text/plain');
             res.status(200)
-            .attachment(`${req.session.account.idTokenClaims.preferred_username}.pfx`)
-            .send(pfx)
-        }
-    }
-);
-
-router.get('/profile',
-    isAuthenticated, // check if user is authenticated
-    async function (req, res, next) {
-        try {
-            const graphResponse = await fetch(GRAPH_ME_ENDPOINT, req.session.accessToken);
-            res.render('profile', { profile: graphResponse });
-        } catch (error) {
-            next(error);
+                .attachment(`${req.session.account.idTokenClaims.preferred_username}.pfx`)
+                .send(pfx)
         }
     }
 );

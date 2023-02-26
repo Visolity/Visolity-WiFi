@@ -10,7 +10,7 @@ dotenv.config();
 global.logger = logger;
 global.config = {};
 global.config.radius = {};
-global.config.radius.secret = 'test123';
+global.config.radius.secret =  process.env.RADIUS_SECRET;
 
 // Certs
 global.config.certs = {};

@@ -5,7 +5,7 @@ import radiusserver from './radius/server.js';
 logger.info('[Main] Starting Visolity WiFi Authenticator');
 
 // Custom EAP-TLS Radius Server 
-//radiusserver.start();
+radiusserver.start();
 
 // Webserver for user Enrollment
 webserver.start(); 
