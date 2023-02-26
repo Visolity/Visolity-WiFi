@@ -20,8 +20,8 @@ config.certs.ca = {};
 config.certs.ca.publickey = fs.readFileSync("src/certs/ca/ca.pem");
 config.certs.ca.privatekey = fs.readFileSync("src/certs/ca/ca.key");
 config.certs.radius = {};
-config.certs.radius.publickey = fs.readFileSync("src/certs/radius/radius.pem");
-config.certs.radius.privatekey = fs.readFileSync("src/certs/radius/radius.key");
+config.certs.radius.publickey = fs.readFileSync("src/certs/ca/radius.pem");
+config.certs.radius.privatekey = fs.readFileSync("src/certs/ca/radius.key");
 
 // NodeCache
 global.identities = new NodeCache({ useClones: false, stdTTL: 60 }); // queue data maximum for 60 seconds

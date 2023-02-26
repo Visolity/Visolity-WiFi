@@ -4,5 +4,3 @@ logs/logfile
 src/certs/users/*
 src/certs/ca/ca.key
 src/certs/ca/ca.pem
-src/certs/radius/radius.key
-src/certs/radius/radius.pem
