@@ -11,3 +11,5 @@ services:
     ports:
       - 80:80
       - 1812:1812/udp
+    volumes:
+      - ./src/certs:/usr/src/app/src/certs
