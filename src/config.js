@@ -18,8 +18,8 @@ global.config.certs.ca = {};
 global.config.certs.ca.publickey = fs.readFileSync("/workspaces/Visolity-WiFi/src/certs/ca/ca.pem");
 global.config.certs.ca.privatekey = fs.readFileSync("/workspaces/Visolity-WiFi/src/certs/ca/ca.key");
 global.config.certs.radius = {};
-global.config.certs.radius.privatekey = fs.readFileSync("/workspaces/Visolity-WiFi/src/certs/radius/radius.pem");
-global.config.certs.radius.publickey = fs.readFileSync("/workspaces/Visolity-WiFi/src/certs/radius/radius.key");
+global.config.certs.radius.publickey = fs.readFileSync("/workspaces/Visolity-WiFi/src/certs/radius/radius.pem");
+global.config.certs.radius.privatekey = fs.readFileSync("/workspaces/Visolity-WiFi/src/certs/radius/radius.key");
 
 
 global.identities = new NodeCache({ useClones: false, stdTTL: 60 }); // queue data maximum for 60 seconds
