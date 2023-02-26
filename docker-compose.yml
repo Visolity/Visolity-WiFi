@@ -1,0 +1,12 @@
+version: '3.4'
+
+services:
+  visolity-wifi-ca:
+    image: visolity-wifi
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    environment:
+      NODE_ENV: production
+    ports:
+      - 1812:1812/udp

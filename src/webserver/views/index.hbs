@@ -1,0 +1,46 @@
+<section id="contact" class="section-1 form">
+    <div class="container smaller">
+        <div class="row text-center intro">
+            <div class="col-12">
+                <h2>{{claims.name}}</h2>
+                <p class="text-max-800">Download hier een WiFi configuratie profiel of je gebruikerscertificaat voor toegang tot het
+                    Visolity WiFi Netwerk.</p>
+            </div>
+        </div>
+        <form method='GET' action="/download" id="leverage-simple-form" class="leverage-simple-form">
+
+            <div class="row form-group-margin">
+                <div class="col-12 col-md-6 m-0 p-2 input-group">
+                    <input type="text" class="form-control field-name" readonly="true"
+                        value='{{ claims.name }}' placeholder="Name">
+                </div>
+                 <div class="col-12 col-md-6 m-0 p-2 input-group">
+                    <input type="text" class="form-control field-name" readonly="true"
+                        value='{{ claims.preferred_username }}' placeholder="Name">
+                </div>
+                 <div class="col-12 col-md-6 m-0 p-2 input-group">
+                    <input type="text" class="form-control field-name" readonly="true"
+                        value='{{ p12file.notAfter }}' placeholder="Name">
+                </div>
+                <div class="col-12 col-md-6 m-0 p-2 input-group">
+                    <i class="icon-arrow-down mr-3"></i>
+                    <select name="type" class="form-control field-budget">
+                        <option value="" disabled>Kies Download</option>
+                        <option selected value="apple">IOS / macOS Profiel</option>
+                        <option value="pfx">Certificaat in PFX formaat</option>
+                        <option value="txt">Certificaat in base64 formaat</option>
+                    </select>
+                </div>
+                <div class="col-12 m-0 p-2 input-group">
+                    <textarea disabled class="form-control field-message">{{ p12file.certificate }}{{ p12file.privateKey }}</textarea>
+                </div>
+                <div disabled class="col-12 m-0 p-2 input-group">
+                    <textarea class="form-control field-message">{{ p12file.p12encoded }}</textarea>
+                </div>
+                <div class="col-12 input-group m-0 p-2">
+                    <button type="submit" class="btn primary-button">Download</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
