@@ -8,23 +8,25 @@ dotenv.config();
 
 // Initialize Logger
 global.logger = logger;
+
+// Config
 global.config = {};
-global.config.radius = {};
-global.config.radius.secret =  process.env.RADIUS_SECRET;
+config.radius = {};
+config.radius.secret =  process.env.RADIUS_SECRET;
 
 // Certs
-global.config.certs = {};
-global.config.certs.ca = {};
-global.config.certs.ca.publickey = fs.readFileSync("src/certs/ca/ca.pem");
-global.config.certs.ca.privatekey = fs.readFileSync("src/certs/ca/ca.key");
-global.config.certs.radius = {};
-global.config.certs.radius.publickey = fs.readFileSync("src/certs/radius/radius.pem");
-global.config.certs.radius.privatekey = fs.readFileSync("src/certs/radius/radius.key");
+config.certs = {};
+config.certs.ca = {};
+config.certs.ca.publickey = fs.readFileSync("src/certs/ca/ca.pem");
+config.certs.ca.privatekey = fs.readFileSync("src/certs/ca/ca.key");
+config.certs.radius = {};
+config.certs.radius.publickey = fs.readFileSync("src/certs/radius/radius.pem");
+config.certs.radius.privatekey = fs.readFileSync("src/certs/radius/radius.key");
 
-
+// NodeCache
 global.identities = new NodeCache({ useClones: false, stdTTL: 60 }); // queue data maximum for 60 seconds
-global.eapConnectionStates = new NodeCache({ useClones: false, stdTTL: 3600 }); // max for one hour
 global.lastProcessedIdentifier = new NodeCache({ useClones: false, stdTTL: 60 });
-global.openTLSSockets = new NodeCache({ useClones: false, stdTTL: 3600 }); // keep sockets for about one hour
 global.queueData = new NodeCache({ useClones: false, stdTTL: 60 }); // queue data maximum for 60 seconds
 global.fragmentData = new NodeCache({ useClones: false, stdTTL: 60 }); // queue data maximum for 60 seconds
+global.openTLSSockets = new NodeCache({ useClones: false, stdTTL: 3600 }); // keep sockets for about one hour
+global.eapConnectionStates = new NodeCache({ useClones: false, stdTTL: 3600 }); // max for one hour
