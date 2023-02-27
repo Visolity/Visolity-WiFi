@@ -1,6 +1,16 @@
 .env
 node_modules
 logs/logfile
-src/certs/users/*
+src/certs/users/*.rawp12
 src/certs/ca/ca.key
 src/certs/ca/ca.pem
+src/certs/ca/index.txt
+src/certs/ca/dh
+.gitignore
+src/certs/ca/index.txt.attr
+src/certs/ca/index.txt.old
+src/certs/ca/passwords.mk
+src/certs/ca/radius.key
+src/certs/ca/radius.pem
+src/certs/ca/serial
+src/certs/ca/serial.old

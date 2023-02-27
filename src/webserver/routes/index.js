@@ -1,8 +1,7 @@
 import fs from 'fs';
 import express from 'express';
 var router = express.Router();
-import fetch from '../fetch.js'
-import CertificateGeneration from '../../crypto/CertificateGeneration.js';
+import ca from '../../crypto/ca.js';
 import ProfileGeneration from '../../profile/ProfileGeneration.js';
 
 const GRAPH_ME_ENDPOINT = process.env.GRAPH_API_ENDPOINT + "v1.0/me";
@@ -32,7 +31,7 @@ router.get('/',
                 p12file = JSON.parse(rawp12);
             }
             else {
-                p12file = CertificateGeneration.CreateHostCert(
+                p12file = ca.CreateUserCert(
                     req.session.account.idTokenClaims.name,
                     req.session.account.idTokenClaims.preferred_username,
                     [req.session.account.idTokenClaims.preferred_username]);

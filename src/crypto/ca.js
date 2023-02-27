@@ -16,7 +16,7 @@ const randomSerialNumber = () => {
 
 // Get the Not Before Date for a Certificate (will be valid from 2 days ago)
 const getCertNotBefore = () => {
-	let twoDaysAgo = new Date(Date.now() - 60*60*24*2*1000);
+	let twoDaysAgo = new Date(Date.now() - 60 * 60 * 24 * 2 * 1000);
 	let year = twoDaysAgo.getFullYear();
 	let month = (twoDaysAgo.getMonth() + 1).toString().padStart(2, '0');
 	let day = twoDaysAgo.getDate();
@@ -25,7 +25,7 @@ const getCertNotBefore = () => {
 
 // Get Certificate Expiration Date (Valid for 365 Days)
 const getCertNotAfter = (notBefore) => {
-	let ninetyDaysLater = new Date(notBefore.getTime() + 60*60*24*365*1000);
+	let ninetyDaysLater = new Date(notBefore.getTime() + 60 * 60 * 24 * 365 * 1000);
 	let year = ninetyDaysLater.getFullYear();
 	let month = (ninetyDaysLater.getMonth() + 1).toString().padStart(2, '0');
 	let day = ninetyDaysLater.getDate();
@@ -37,8 +37,8 @@ const DEFAULT_ST = 'Drenthe';
 const DEFAULT_L = 'Emmen';
 const DEFAULT_ORG = 'Visolity';
 
-class CertificateGeneration {
-	
+class ca {
+
 	static GetRootCA() {
 
 		const pemCert = config.certs.ca.publickey;
@@ -48,13 +48,45 @@ class CertificateGeneration {
 		return { certificate: pemCert, privateKey: pemKey };
 	}
 
-	static CreateHostCert(hostCertCN, username, validDomains) {
+	static ValidateUserCert(cert) {
+
+		// CA ObjectStore
+		let rootCAObject = this.GetRootCA();
+		let caCert = forge.pki.certificateFromPem(rootCAObject.certificate);
+		const caStore = forge.pki.createCaStore();
+		caStore.addCertificate(caCert);
+
+		// User Cert as forge object
+		var pem = '-----BEGIN CERTIFICATE-----\n' + cert.raw.toString('base64') + '\n-----END CERTIFICATE-----';
+		var certificate = forge.pki.certificateFromPem(pem);
+
+		// Expired?
+		const padding = 24 * 3600 * 1000;
+		const now = new Date();
+		if (now.getTime() + padding >= certificate.validity.notAfter.getTime()) {
+			logger.info(`[Visolity-CA][CN=${cert.subject["CN"]}] Certificate Expired`);
+			return false;
+		}
+
+		try {
+			if (!forge.pki.verifyCertificateChain(caStore, [certificate])) {
+				logger.info(`[Visolity-CA][CN=${cert.subject["CN"]}] Certificate is not verified by the provided CA chain.`);
+				return false;
+			}
+		} catch (error) {
+			logger.info(`[Visolity-CA][CN=${cert.subject["CN"]}] ${error.message}`);
+			return false;
+		}
+
+		logger.info(`[Visolity-CA][CN=${cert.subject["CN"]}] Certificate is valid.`);
+		return true;
+	}
+
+	static CreateUserCert(hostCertCN, username, validDomains) {
 		if (!hostCertCN.toString().trim()) throw new Error('"hostCertCN" must be a String');
 		if (!Array.isArray(validDomains)) throw new Error('"validDomains" must be an Array of Strings');
 
 		let rootCAObject = this.GetRootCA();
-
-		if (!rootCAObject || !rootCAObject.hasOwnProperty('certificate') || !rootCAObject.hasOwnProperty('privateKey')) throw new Error('"rootCAObject" must be an Object with the properties "certificate" & "privateKey"');
 
 		// Convert the Root CA PEM details, to a forge Object
 		let caCert = forge.pki.certificateFromPem(rootCAObject.certificate);
@@ -76,7 +108,7 @@ class CertificateGeneration {
 		}, {
 			name: 'organizationName',
 			value: DEFAULT_ORG
-		},  { 
+		}, {
 			name: 'commonName',
 			value: hostCertCN
 		}, {
@@ -89,7 +121,7 @@ class CertificateGeneration {
 			cA: false
 		}, {
 			name: 'subjectAltName',
-			altNames: '' 
+			altNames: ''
 		}];
 
 		// Create an empty Certificate
@@ -113,16 +145,16 @@ class CertificateGeneration {
 
 		// generate p12
 		//const certChain = pemHostCert + rootCAObject.certificate;
-		const pkcsAsn1 = forge.pkcs12.toPkcs12Asn1(hostKeys.privateKey, pemHostCert, 'password', {algorithm: '3des'});
+		const pkcsAsn1 = forge.pkcs12.toPkcs12Asn1(hostKeys.privateKey, pemHostCert, 'password', { algorithm: '3des' });
 
 		const pkcsAsn1Bytes = forge.asn1.toDer(pkcsAsn1).getBytes();
-        //const fs = require('fs')
+		//const fs = require('fs')
 		//fs.promises.writeFile('certs/cert.p12', pkcsAsn1Bytes, {encoding: 'binary'});
 
 		const p12encoded = forge.util.encode64(pkcsAsn1Bytes); // Direct buffer which can be sent to s3
 
-		return { p12encoded: p12encoded ,certificate: pemHostCert, privateKey: pemHostKey, notAfter: newHostCert.validity.notBefore, notAfter: newHostCert.validity.notAfter };
+		return { p12encoded: p12encoded, certificate: pemHostCert, privateKey: pemHostKey, notAfter: newHostCert.validity.notBefore, notAfter: newHostCert.validity.notAfter };
 	}
 }
 
-export default CertificateGeneration;
+export default ca;

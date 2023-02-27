@@ -10,15 +10,10 @@ const tlsOptions = {
     key: [
         {
             pem: config.certs.radius.privatekey,
-            passphrase: 'whatever',
         },
     ],
-    ca: [
-        config.certs.ca.publickey,
-    ],
     requestCert: true,
-    secureOptions: C.SSL_OP_NO_TICKET, 
-    rejectUnauthorized: true 
+    //secureOptions: C.SSL_OP_NO_TICKET, 
 }
 
 export function startTLSServer() {
@@ -29,7 +24,6 @@ export function startTLSServer() {
         secureContext,
         isServer: true,
         //enableTrace: true,
-        rejectUnauthorized: true,
         requestCert: true,  // TLS EAP
     });
     

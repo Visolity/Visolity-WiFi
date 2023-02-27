@@ -1,3 +1,4 @@
+import ca from '../crypto/ca.js';
 import { encodeTunnelPW, startTLSServer } from '../crypto/tlsserver.js';
 
 function tlsHasExportKeyingMaterial(tlsSocket) {
@@ -149,22 +150,21 @@ eaptlsHandler.decodeEAPmessage = (msg) => {
 
 eaptlsHandler.authResponse = (identifier, socket, packet) => {
 
-    logger.info(`[EAP-TLS] ${packet.code} | User: ${packet.attributes['User-Name']} | NAS-IP: ${packet.attributes['NAS-IP-Address']}`);
-    
     var authenticated = false;
+    logger.info(`[EAP-TLS] ${packet.code} | User: ${packet.attributes['User-Name']} | NAS-IP: ${packet.attributes['NAS-IP-Address']}`);
 
     // TLS Sessie??
     if (socket != null) {
 
-        var client_cert = socket.getPeerCertificate();
-        var client_pem = socket.getPeerCertificate().raw.toString('base64');
-        //var client_pem = '-----BEGIN CERTIFICATE-----\n' + socket.getPeerCertificate().raw.toString('base64') + '\n-----END CERTIFICATE-----';
+        var user_cert = socket.getPeerCertificate();
+        logger.info(`[EAP-TLS][CN=${user_cert.subject["CN"]}] Client Cert CN: ${user_cert.subject["CN"]} | emailAddress: ${user_cert.subject["emailAddress"]}`);
 
-        logger.info(`[EAP-TLS] Client Cert CN: ${client_cert.subject["CN"]} | emailAddress: ${client_cert.subject["emailAddress"]}`);
+        // UserCert validation
+        if (ca.ValidateUserCert(user_cert) === true) {
 
-        // Todo: cert validation
-        // Todo: User validation against azure Graph 
-        authenticated = true // AUTH success
+            // Todo: User validation against azure Graph 
+            authenticated = true // AUTH success
+        }
     }
     
     // EAP Response
