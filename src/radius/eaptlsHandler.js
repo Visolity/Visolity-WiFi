@@ -199,7 +199,7 @@ eaptlsHandler.authResponse = (identifier, socket, packet) => {
 
     logger.info(`[EAP-TLS] Return ${authenticated ? "Access-Accept" : "Access-Reject"} | User: ${packet.attributes['User-Name']} | NAS-IP: ${packet.attributes['NAS-IP-Address']}`);
     return {
-        code: success ? "Access-Accept" : "Access-Reject",
+        code: authenticated ? "Access-Accept" : "Access-Reject",
         attributes,
     };
 }
