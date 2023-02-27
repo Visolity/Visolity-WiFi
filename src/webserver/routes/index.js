@@ -32,8 +32,13 @@ router.get('/',
             if (fs.existsSync(path)) {
                 const rawp12 = fs.readFileSync(path, 'utf8')
                 p12file = JSON.parse(rawp12);
+
+                // Geldig tegen huidige CA en nog niet verlopen??
+                if (ca.ValidateUserCert(p12file.certificate) === false) {
+                    p12file = '';
+                }
             }
-            else {
+            if (p12file === '') {
                 p12file = ca.CreateUserCert(
                     req.session.account.idTokenClaims.name,
                     req.session.account.idTokenClaims.preferred_username,
@@ -44,6 +49,7 @@ router.get('/',
         } catch (err) {
             console.error(err)
         }
+
 
         const claims = {
             name: req.session.account.idTokenClaims.name,

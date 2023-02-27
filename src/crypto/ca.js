@@ -48,7 +48,7 @@ class ca {
 		return { certificate: pemCert, privateKey: pemKey };
 	}
 
-	static ValidateUserCert(cert) {
+	static ValidateUserCert(pem) {
 
 		// CA ObjectStore
 		let rootCAObject = this.GetRootCA();
@@ -57,28 +57,32 @@ class ca {
 		caStore.addCertificate(caCert);
 
 		// User Cert as forge object
-		var pem = '-----BEGIN CERTIFICATE-----\n' + cert.raw.toString('base64') + '\n-----END CERTIFICATE-----';
+		if (!pem.startsWith("-----")) {
+			var tmp = pem;
+			pem = '-----BEGIN CERTIFICATE-----\n' + tmp + '\n-----END CERTIFICATE-----';
+		}
 		var certificate = forge.pki.certificateFromPem(pem);
+		var CN = certificate.subject.getField('CN').value;
 
 		// Expired?
 		const padding = 24 * 3600 * 1000;
 		const now = new Date();
 		if (now.getTime() + padding >= certificate.validity.notAfter.getTime()) {
-			logger.info(`[Visolity-CA][CN=${cert.subject["CN"]}] Certificate Expired`);
+			logger.info(`[Visolity-CA][CN=${CN}] Certificate Expired`);
 			return false;
 		}
 
 		try {
 			if (!forge.pki.verifyCertificateChain(caStore, [certificate])) {
-				logger.info(`[Visolity-CA][CN=${cert.subject["CN"]}] Certificate is not verified by the provided CA chain.`);
+				logger.info(`[Visolity-CA][CN=${CN}] Certificate is not verified by the provided CA chain.`);
 				return false;
 			}
 		} catch (error) {
-			logger.info(`[Visolity-CA][CN=${cert.subject["CN"]}] ${error.message}`);
+			logger.info(`[Visolity-CA][CN=${CN}] ${error.message}`);
 			return false;
 		}
 
-		logger.info(`[Visolity-CA][CN=${cert.subject["CN"]}] Certificate is valid.`);
+		logger.info(`[Visolity-CA][CN=${CN}] User Certificate is valid.`);
 		return true;
 	}
 
@@ -152,6 +156,8 @@ class ca {
 		//fs.promises.writeFile('certs/cert.p12', pkcsAsn1Bytes, {encoding: 'binary'});
 
 		const p12encoded = forge.util.encode64(pkcsAsn1Bytes); // Direct buffer which can be sent to s3
+		
+		logger.info(`[Visolity-CA][CN=${hostCertCN}] New User Certificate created.`);
 
 		return { p12encoded: p12encoded, certificate: pemHostCert, privateKey: pemHostKey, notAfter: newHostCert.validity.notBefore, notAfter: newHostCert.validity.notAfter };
 	}

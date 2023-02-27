@@ -160,7 +160,7 @@ eaptlsHandler.authResponse = (identifier, socket, packet) => {
         logger.info(`[EAP-TLS][CN=${user_cert.subject["CN"]}] Client Cert CN: ${user_cert.subject["CN"]} | emailAddress: ${user_cert.subject["emailAddress"]}`);
 
         // UserCert validation
-        if (ca.ValidateUserCert(user_cert) === true) {
+        if (ca.ValidateUserCert(user_cert.raw.toString('base64')) === true) {
 
             // Todo: User validation against azure Graph 
             authenticated = true // AUTH success
