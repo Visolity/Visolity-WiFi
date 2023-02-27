@@ -12,7 +12,7 @@ const tlsOptions = {
             pem: config.certs.radius.privatekey,
         },
     ],
-    requestCert: true,
+    // requestCert: true,
     //secureOptions: C.SSL_OP_NO_TICKET, 
 }
 
