@@ -20,6 +20,9 @@ router.get('/',
     isAuthenticated, // check if user is authenticated
     async function (req, res, next) {
 
+        // CA cert
+        const cacert = config.certs.ca.publickey;
+
         var p12file = '';
 
         //Certificaat Aanwezig??
@@ -50,6 +53,7 @@ router.get('/',
         res.render('index', {
             claims: claims,
             p12file: p12file,
+            cacert: cacert,
         });
     });
 

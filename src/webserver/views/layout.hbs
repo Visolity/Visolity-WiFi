@@ -11,7 +11,7 @@
         <meta http-equiv="x-ua-compatible" content="ie=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Visolity - BYOD WiFi Setup</title>
+        <title>Visolity - EAP-TLS WiFi Setup</title>
 
         <meta name="description" content="Creative Agency, Portfolio, Corporate, Startup & Technology">
         <meta name="subject" content="Creative Agency, Portfolio, Corporate, Startup & Technology">
@@ -51,7 +51,6 @@
         </style>
         
     </head>
-
     <body>
 
         <!-- Header -->
@@ -72,7 +71,6 @@
                   
                 </div>
             </nav>
-
         </header>
 
         <!-- Hero -->
@@ -99,7 +97,7 @@
             </div>
         </section>
 
-         {{{body}}}
+        {{{body}}}
 
         <!-- Footer -->
         <footer>
@@ -109,7 +107,7 @@
                 <div class="container">
                     <div class="row">
                         <div class="col-12 col-md-6 p-3 text-center text-lg-left">
-                            <p>Visolity BYOD WiFi Setup</p>
+                            <p>Visolity EAP-TLS WiFi Setup</p>
                         </div>
                         <div class="col-12 col-md-6 p-3 text-center text-lg-right">
                             <p>© 2023 <a href="https://www.visolity.nl" target="_blank">Visolity</a>.</p>
@@ -138,6 +136,31 @@
         <script src="assets/js/vendor/cookie-notice.min.js"></script>
         <script src="assets/js/vendor/particles.min.js"></script>
         <script src="assets/js/main.js"></script>
-
+        <script>
+            $('#type').change(function () {
+                opt = $(this).val();
+                if (opt == "apple") {
+                    $("#pfx").collapse('hide');
+                    $("#txt1").collapse('hide');
+                    $("#txt2").collapse('hide');
+                    $("#txt3").collapse('hide');
+                    $("#apple").collapse('show');
+                }
+                if (opt == "txt") {
+                    $("#pfx").collapse('hide');
+                    $("#apple").collapse('hide');
+                    $("#txt1").collapse('show');
+                    $("#txt2").collapse('show');
+                    $("#txt3").collapse('show');
+                }
+                if (opt == "pfx") {
+                    $("#apple").collapse('hide');
+                    $("#txt1").collapse('hide');
+                    $("#txt2").collapse('hide');
+                    $("#txt3").collapse('hide');
+                    $("#pfx").collapse('show');
+                }
+            });
+        </script>
     </body>
 </html>

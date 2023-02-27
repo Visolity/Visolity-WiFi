@@ -24,23 +24,32 @@
                 </div>
                 <div class="col-12 col-md-6 m-0 p-2 input-group">
                     <i class="icon-arrow-down mr-3"></i>
-                    <select name="type" class="form-control field-budget">
+                    <select name="type" id="type" class="form-control field-budget">
                         <option value="" disabled>Kies Download</option>
-                        <option selected value="apple">IOS / macOS Profiel</option>
+                        <option selected value="apple">IOS / macOS Configuratie Profiel</option>
                         <option value="pfx">Certificaat in PFX formaat</option>
                         <option value="txt">Certificaat in base64 formaat</option>
                     </select>
                 </div>
-                <div class="col-12 m-0 p-2 input-group">
-                    <textarea disabled class="form-control field-message">{{ p12file.certificate }}{{ p12file.privateKey }}</textarea>
-                </div>
-                <div disabled class="col-12 m-0 p-2 input-group">
-                    <textarea class="form-control field-message">{{ p12file.p12encoded }}</textarea>
+                    <div id="apple" class="collapse show col-12 m-0 p-2 input-group">
+                        <textarea class="form-control field-message">Bij het downloaden wordt de configuratie automatisch klaargezet voor installatie. Vervolgens dien je toestemming te geven om het profiel te installeren.&#13;&#10;&#13;&#10;* IOS: "Algemeen > VPN- en apparaatbeheer.&#13;&#10;* MacOS: "Pricacy en beveiliging > Profielen."</textarea>
+                    </div>
+                    <div id="pfx" class="collapse col-12 m-0 p-2 input-group">
+                        <textarea class="form-control field-message">BASE64 encoded pfx. Onder windows wordt dit standaard ondersteund.&#13;Op een ander platform moet je wellicht de base64 encoding eraf halen.</textarea>
+                    </div>
+                    <div id="txt1" class="collapse col-12 m-0 p-2 input-group">
+                        <textarea class="form-control field-message">#&#13;&#10;#CA Public Key - Base64 encoded PEM&#13;&#10;#&#13;&#10;{{ cacert }}</textarea>
+                    </div>
+                    <div id="txt2" class="collapse col-12 m-0 p-2 input-group">
+                        <textarea class="form-control field-message">#&#13;&#10;#Base64 encoded PEM&#13;&#10;#&#13;&#10;{{ p12file.certificate }}{{ p12file.privateKey }}</textarea>
+                    </div>
+                    <div id="txt3" class="collapse col-12 m-0 p-2 input-group">
+                        <textarea class="form-control field-message">#&#13;&#10;#Base64 encoded PFX&#13;&#10;#Standaard ondersteund in windows.&#13;&#10;#&#13;&#10;{{ p12file.p12encoded }}</textarea>
+                    </div>
                 </div>
                 <div class="col-12 input-group m-0 p-2">
                     <button type="submit" class="btn primary-button">Download</button>
                 </div>
-            </div>
         </form>
     </div>
 </section>
