@@ -149,32 +149,36 @@ eaptlsHandler.decodeEAPmessage = (msg) => {
 
 eaptlsHandler.authResponse = (identifier, socket, packet) => {
 
-    var success = false
-    var client_cert = socket.getPeerCertificate();
-    var client_pem = socket.getPeerCertificate().raw.toString('base64');
-    //var client_pem = '-----BEGIN CERTIFICATE-----\n' + socket.getPeerCertificate().raw.toString('base64') + '\n-----END CERTIFICATE-----';
-
     logger.info(`[EAP-TLS] ${packet.code} | User: ${packet.attributes['User-Name']} | NAS-IP: ${packet.attributes['NAS-IP-Address']}`);
-    logger.info(`[EAP-TLS] Client Cert CN: ${client_cert.subject["CN"]} | emailAddress: ${client_cert.subject["emailAddress"]}`);
-
-    // Todo: cert validation
-    // Todo: User validation against azure Graph 
-    var success = true // AUTH success
     
+    var authenticated = false;
+
+    // TLS Sessie??
+    if (socket != null) {
+
+        var client_cert = socket.getPeerCertificate();
+        var client_pem = socket.getPeerCertificate().raw.toString('base64');
+        //var client_pem = '-----BEGIN CERTIFICATE-----\n' + socket.getPeerCertificate().raw.toString('base64') + '\n-----END CERTIFICATE-----';
+
+        logger.info(`[EAP-TLS] Client Cert CN: ${client_cert.subject["CN"]} | emailAddress: ${client_cert.subject["emailAddress"]}`);
+
+        // Todo: cert validation
+        // Todo: User validation against azure Graph 
+        authenticated = true // AUTH success
+    }
+    
+    // EAP Response
     const buffer = Buffer.from([
-        success ? 3 : 4,
+        authenticated ? 3 : 4,
         identifier,
         0,
         4, //  length (2/2)
     ]);
     const attributes = [];
     attributes.push(['EAP-Message', buffer]);
-    // do not send username on auth response
-    if (packet.attributes && packet.attributes['User-Name']) {
-        attributes.push(['User-Name', packet.attributes['User-Name'].toString()]);
-    }
+    attributes.push(['User-Name', packet.attributes['User-Name'].toString()]);
 
-    if (tlsHasExportKeyingMaterial(socket)) {
+    if (authenticated == true) {
 
         const keyingMaterial = socket.exportKeyingMaterial(128, 'client EAP encryption');
         if (!packet.authenticator) {
@@ -191,10 +195,6 @@ eaptlsHandler.authResponse = (identifier, socket, packet) => {
             311,
             [[17, encodeTunnelPW(keyingMaterial.slice(0, 32), packet.authenticator, config.radius.secret)]],
         ]); // MS-MPPE-Recv-Key
-
-    }
-    else {
-        this.logger.error('FATAL: no exportKeyingMaterial method available!!!, you need latest NODE JS, see https://github.com/nodejs/node/pull/31814');
     }
 
     logger.info(`[EAP-TLS] Return ${success ? "Access-Accept" : "Access-Reject"} | User: ${packet.attributes['User-Name']} | NAS-IP: ${packet.attributes['NAS-IP-Address']}`);
@@ -304,10 +304,18 @@ eaptlsHandler.handleTLSmessage = async (identifier, stateID, msg, packet) => {
                 // Length of data in the record (excluding the header itself).
                 const tlsLength = tlsbuf.readUInt16BE(3);
                 logger.debug(`TLS contentType = ${tlsContentType} version = 0x${tlsVersion.toString(16)} tlsLength = ${tlsLength}, tlsBufLength = ${tlsbuf.length}`);
+                
                 if (tlsbuf.length < tlsLength + 5) {
                     console.log(`Not enough data length! tlsbuf.length < ${tlsbuf.length} < ${tlsLength + 5}`);
                     break;
                 }
+
+                // TLS Handhake Failure. Access-Reject
+                if (tlsContentType === 22) {
+                    logger.info(`[EAP-TLS] TLS Handshake Error. | User: ${packet.attributes['User-Name']} | Session: (${stateID})`);
+                    return eaptlsHandler.authResponse(identifier, null, packet);
+                }
+                
                 sendChunk = Buffer.concat([sendChunk, tlsbuf.slice(0, tlsLength + 5)]);
                 tlsbuf = tlsbuf.slice(tlsLength + 5);
 

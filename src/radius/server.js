@@ -62,7 +62,7 @@ async function handleMessage(msg) {
             switch (EAPheader.type) {
                 case 1: // EAP identifiy
                     identities.set(stateID, EAPheader.data); // use token til binary 0.);
-                    logger.debug(`[Radius] EAP Request | Type: Identify | User: ${packet.attributes['User-Name']} | Session: (${stateID})`);
+                    logger.info(`[Radius] EAP Request | Type: Identify | User: ${packet.attributes['User-Name']} | Session: (${stateID})`);
 
                     // Identify and Request EAP-TLS (13)
                     response = eaptlsHandler.buildEAPTLSResponse(EAPheader.identifier, 13, 0x20, stateID);
