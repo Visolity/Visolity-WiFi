@@ -81,41 +81,10 @@
 		</dict>
 		<dict>
 			<key>PayloadCertificateFileName</key>
-			<string>ca.der</string>
+			<string>CA.cer</string>
 			<key>PayloadContent</key>
 			<data>
-			MIIEvTCCA6WgAwIBAgIUXuGLpUbyAjAbezqTt7cavSk4M9wwDQYJ
-			KoZIhvcNAQELBQAwfzELMAkGA1UEBhMCTkwxEDAOBgNVBAgMB0Ry
-			ZW50aGUxDjAMBgNVBAcMBUVtbWVuMREwDwYDVQQKDAhWaXNvbGl0
-			eTEgMB4GCSqGSIb3DQEJARYRYWRtaW5Admlzb2xpdHkubmwxGTAX
-			BgNVBAMMEFZpc29saXR5IFdpRmkgQ0EwHhcNMjMwMjExMTMzNTI3
-			WhcNMzMwMjEwMTMzNTI3WjB/MQswCQYDVQQGEwJOTDEQMA4GA1UE
-			CAwHRHJlbnRoZTEOMAwGA1UEBwwFRW1tZW4xETAPBgNVBAoMCFZp
-			c29saXR5MSAwHgYJKoZIhvcNAQkBFhFhZG1pbkB2aXNvbGl0eS5u
-			bDEZMBcGA1UEAwwQVmlzb2xpdHkgV2lGaSBDQTCCASIwDQYJKoZI
-			hvcNAQEBBQADggEPADCCAQoCggEBANK0PPKHSK1UXXqpX2ABAM/9
-			sYKvw2ZcVvLOmIXDrok56OjTXbC7U9VWOxo1ytrEdoyPl2lzcQ0+
-			WOaqp/V4Kd3tYO36ZVfXF9zxKsNvKCyy0K8GdUyc7qSBH6f8+b7o
-			RsS9fMS04hyQGA0RyIQZzz7aZf7cfoj4xfXDn9Gh5HDqoqDhkdtL
-			o0ucPfzCoP0zsCfprezdLZW6xoWj83VaZsI43J/4kVuV1BbDB4Fe
-			vvHBhmrMfzIsKUJbeLhDfjZSLvNQ4s8H/1CQDZ45kP1lAzcFNU1c
-			qfQMSJcQYWmL/Gk/qgJbaAY/+xINAHKoJ6vrAI6Ia4cV0pWcNXpL
-			NCZN9+UCAwEAAaOCAS8wggErMB0GA1UdDgQWBBR4ayzxQQFzJRSk
-			pyJPe/E3+63tazCBvgYDVR0jBIG2MIGzgBR4ayzxQQFzJRSkpyJP
-			e/E3+63ta6GBhKSBgTB/MQswCQYDVQQGEwJOTDEQMA4GA1UECAwH
-			RHJlbnRoZTEOMAwGA1UEBwwFRW1tZW4xETAPBgNVBAoMCFZpc29s
-			aXR5MSAwHgYJKoZIhvcNAQkBFhFhZG1pbkB2aXNvbGl0eS5ubDEZ
-			MBcGA1UEAwwQVmlzb2xpdHkgV2lGaSBDQYIUXuGLpUbyAjAbezqT
-			t7cavSk4M9wwDwYDVR0TAQH/BAUwAwEB/zA4BgNVHR8EMTAvMC2g
-			K6AphidodHRwOi8vd2lmaS52aXNvbGl0eS5ubC9jcmwvdXNlcl9j
-			YS5jcmwwDQYJKoZIhvcNAQELBQADggEBAIzAasC1j4css6MwqKG8
-			6jzhUcHS7QTyruPyfZoNDby4/yk9rV1f8i6QddypzA2s7lfAo8KK
-			SsYqkLwe3yvNWxNscF3rDsDOr3dzExotGcvaJN40y1aK5z36QjiX
-			DT3rAvylEY25l7GoJB7ppKJZcTCrM4xDVi9cMHpur0E0iOyVvG3d
-			bOAQzfKebpbGKq2lA0GLqRM4+ZrbCD8HBXEMM/fIWOL3icS4vHCA
-			CPiP0+Uxwv9cfuno12I8zpRQdV5GvGW66ctMeS6FDz636G5KQ6wn
-			WaNC2KVywKvk9J+zbSWfqNYB+ns3oqlV/EiNC7c7fRGyZA4dKE8W
-			65K0+A75u08=
+			BASE64_CA
 			</data>
 			<key>PayloadDescription</key>
 			<string>Een CA-rootcertificaat toevoegen</string>
@@ -124,7 +93,7 @@
 			<key>PayloadIdentifier</key>
 			<string>com.apple.security.root.E6A32994-CAF3-4283-B0F1-B56082EFF708</string>
 			<key>PayloadType</key>
-			<string>com.apple.security.root</string>
+			<string>com.apple.security.pem</string>
 			<key>PayloadUUID</key>
 			<string>E6A32994-CAF3-4283-B0F1-B56082EFF708</string>
 			<key>PayloadVersion</key>

@@ -10,12 +10,16 @@ class ProfileGeneration {
         const p12file = JSON.parse(rawp12);
 		const base64p12 = p12file.p12encoded
 
+		// CA
+		const base64ca = config.certs.ca.publickey;
+
 		// Template config
 		const path = `src/profile/${platform}/template.xml`
         const template = fs.readFileSync(path, 'utf8')
 
 		const mod1 = template.replace("BASE64P12", base64p12);
-		const payload = mod1.replace("USERNAME", name);
+		const mod2 = mod1.replace("BASE64_CA", base64ca.toString('base64'));
+		const payload = mod2.replace("USERNAME", name);
 
 		return payload;
 	}
