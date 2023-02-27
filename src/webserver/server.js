@@ -36,7 +36,7 @@ webserver.start = async () => {
         res.status(404).send('!! Geen Toegang !!')
     });
 
-    app.listen(3000)
+    app.listen(80)
     logger.info('[WebServer] Starting WebServer on port 80');
 
 };

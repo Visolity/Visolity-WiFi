@@ -178,7 +178,7 @@ eaptlsHandler.authResponse = (identifier, socket, packet) => {
     attributes.push(['EAP-Message', buffer]);
     attributes.push(['User-Name', packet.attributes['User-Name'].toString()]);
 
-    if (authenticated == true) {
+    if (authenticated === true) {
 
         const keyingMaterial = socket.exportKeyingMaterial(128, 'client EAP encryption');
         if (!packet.authenticator) {
@@ -311,7 +311,7 @@ eaptlsHandler.handleTLSmessage = async (identifier, stateID, msg, packet) => {
                 }
 
                 // TLS Handhake Failure. Access-Reject
-                if (tlsContentType === 22) {
+                if (tlsContentType === 21) {
                     logger.info(`[EAP-TLS] TLS Handshake Error. | User: ${packet.attributes['User-Name']} | Session: (${stateID})`);
                     return eaptlsHandler.authResponse(identifier, null, packet);
                 }
