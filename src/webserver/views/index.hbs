@@ -32,10 +32,10 @@
                     </select>
                 </div>
                     <div id="apple" class="collapse show col-12 m-0 p-2 input-group">
-                        <textarea class="form-control field-message">Bij het downloaden wordt de configuratie automatisch klaargezet voor installatie. Vervolgens dien je toestemming te geven om het profiel te installeren.&#13;&#10;&#13;&#10;* IOS: "Algemeen > VPN- en apparaatbeheer.&#13;&#10;* MacOS: "Pricacy en beveiliging > Profielen."</textarea>
+                        <textarea class="form-control field-message">Bij het downloaden wordt de configuratie automatisch klaargezet voor installatie. Vervolgens dien je toestemming te geven om het profiel te installeren.&#13;&#10;&#13;&#10;* IOS: "Algemeen > VPN- en apparaatbeheer.&#13;&#10;* MacOS: "Pricacy en beveiliging > Profielen."&#13;&#10;&#13;&#10;Het profiel bevat alle benodigde certificaten om te kunnen verbinden.</textarea>
                     </div>
                     <div id="pfx" class="collapse col-12 m-0 p-2 input-group">
-                        <textarea class="form-control field-message">BASE64 encoded pfx. Onder windows wordt dit standaard ondersteund.&#13;Op een ander platform moet je wellicht de base64 encoding eraf halen.</textarea>
+                        <textarea class="form-control field-message">BASE64 encoded pfx. Onder windows wordt dit standaard ondersteund.&#13;Op een ander platform moet je wellicht de base64 encoding eraf halen.&#13;&#13;Als dit certificaat is geinstalleerd dan zal Windows bij het verbinden met het "Visolity" netwerk de optie geven om met een certificaat te verbinden. Standaard zal windows ook het certificaat van de Radius server proberen te valideren. Door het root certificaat hieronder toe te voegen aan de "vertrouwde basiscertificeringsinstanties" wordt automatisch ook het Radius certificaat vertrouwd.</textarea>
                     </div>
                     <div id="txt1" class="collapse col-12 m-0 p-2 input-group">
                         <textarea class="form-control field-message">#&#13;&#10;#CA Public Key - Base64 encoded PEM&#13;&#10;#&#13;&#10;{{ cacert }}</textarea>
