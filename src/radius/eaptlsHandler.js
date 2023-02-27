@@ -1,4 +1,5 @@
 import ca from '../crypto/ca.js';
+import msGraphHandler from '../msGraph/msGraphHandler.js';
 import { encodeTunnelPW, startTLSServer } from '../crypto/tlsserver.js';
 
 function tlsHasExportKeyingMaterial(tlsSocket) {
@@ -159,11 +160,14 @@ eaptlsHandler.authResponse = (identifier, socket, packet) => {
         var user_cert = socket.getPeerCertificate();
         logger.info(`[EAP-TLS][CN=${user_cert.subject["CN"]}] Client Cert CN: ${user_cert.subject["CN"]} | emailAddress: ${user_cert.subject["emailAddress"]}`);
 
-        // UserCert validation
+        // UserCert validation against CA
         if (ca.ValidateUserCert(user_cert.raw.toString('base64')) === true) {
-
-            // Todo: User validation against azure Graph 
-            authenticated = true // AUTH success
+    
+            // User validation against azure Graph 
+            if (msGraphHandler.ValidateUser(user_cert.subject) === true) {
+                authenticated = true // AUTH success
+            }
+    
         }
     }
     
