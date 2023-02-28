@@ -21,12 +21,12 @@ webserver.start = async () => {
     }));
 
     // view engine setup
-    app.set('views', path.join(__dirname, 'src/webserver/views'));
+    app.set('views', path.join(__dirname, 'src/webenrollment/views'));
     app.set('view engine', 'hbs');
 
     app.use(express.json());
     app.use(express.urlencoded({ extended: false }));
-    app.use(express.static(path.join(__dirname, 'src/webserver/public')));
+    app.use(express.static(path.join(__dirname, 'src/webenrollment/public')));
 
     app.use('/', indexRouter);
     app.use('/auth', authRouter);
