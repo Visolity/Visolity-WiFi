@@ -6,28 +6,11 @@
 import express from 'express';
 import msal from '@azure/msal-node'
 
-const msalConfig = {
-    auth: {
-        clientId: process.env.CLIENT_ID, // 'Application (client) ID' of app registration in Azure portal - this value is a GUID
-        authority: `https://login.microsoftonline.com/${process.env.TENANT_ID}`, // Full directory URL, in the form of https://login.microsoftonline.com/<tenant>
-        clientSecret: process.env.CLIENT_SECRET // Client secret generated from the app registration in Azure portal
-    },
-    system: {
-        loggerOptions: {
-            loggerCallback(loglevel, message, containsPii) {
-                console.log(message);
-            },
-            piiLoggingEnabled: false,
-            logLevel: "Off",
-        }
-    }
-}
-
 const REDIRECT_URI = process.env.REDIRECT_URI;
 const POST_LOGOUT_REDIRECT_URI = process.env.POST_LOGOUT_REDIRECT_URI;
 
 const router = express.Router();
-const msalInstance = new msal.ConfidentialClientApplication(msalConfig);
+const msalInstance = new msal.ConfidentialClientApplication(config.msalConfig);
 const cryptoProvider = new msal.CryptoProvider();
 
 /**
@@ -180,7 +163,7 @@ router.get('/signout', function (req, res) {
      * session with Azure AD. For more information, visit:
      * https://docs.microsoft.com/azure/active-directory/develop/v2-protocols-oidc#send-a-sign-out-request
      */
-    const logoutUri = `${msalConfig.auth.authority}/oauth2/v2.0/logout?post_logout_redirect_uri=${POST_LOGOUT_REDIRECT_URI}`;
+    const logoutUri = `${config.msalConfig.auth.authority}/oauth2/v2.0/logout?post_logout_redirect_uri=${POST_LOGOUT_REDIRECT_URI}`;
 
     req.session.destroy(() => {
         res.redirect(logoutUri);

@@ -151,10 +151,11 @@ eaptlsHandler.decodeEAPmessage = (msg) => {
 
 eaptlsHandler.authResponse = (identifier, socket, packet) => {
 
-    var authenticated = false;
     logger.info(`[EAP-TLS] ${packet.code} | User: ${packet.attributes['User-Name']} | NAS-IP: ${packet.attributes['NAS-IP-Address']}`);
+    
+    var authenticated = false; // AUTH reject
 
-    // TLS Sessie??
+    // TLS handshake gelukt??
     if (socket != null) {
 
         var user_cert = socket.getPeerCertificate();
@@ -162,12 +163,10 @@ eaptlsHandler.authResponse = (identifier, socket, packet) => {
 
         // UserCert validation against CA
         if (ca.ValidateUserCert(user_cert.raw.toString('base64')) === true) {
-    
             // User validation against azure Graph 
             if (msGraphHandler.ValidateUser(user_cert.subject) === true) {
                 authenticated = true // AUTH success
             }
-    
         }
     }
     

@@ -9,10 +9,32 @@ dotenv.config();
 // Initialize Logger
 global.logger = logger;
 
+// Active users in Azure
+global.AzureADUsers = [];
+
 // Config
 global.config = {};
 config.radius = {};
 config.radius.secret =  process.env.RADIUS_SECRET;
+
+// MSAL config
+config.msalConfig = {
+    auth: {
+        clientId: process.env.CLIENT_ID, 
+        authority: `https://login.microsoftonline.com/${process.env.TENANT_ID}`, 
+        knownAuthorities: [`https://login.microsoftonline.com/${process.env.TENANT_ID}`], 
+        clientSecret: process.env.CLIENT_SECRET 
+    },
+    system: {
+        loggerOptions: {
+            loggerCallback(loglevel, message, containsPii) {
+                logger.info(`[msGraph] ${message}`);
+            },
+            piiLoggingEnabled: false,
+            logLevel: "Off",
+        }
+    }
+}
 
 // Certs
 config.certs = {};
