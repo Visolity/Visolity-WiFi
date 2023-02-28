@@ -37,7 +37,7 @@ async function handleMessage(msg) {
 
     // Alleen geinstereseerd in Access-Request en EAP Berichten
     if (packet.code !== 'Access-Request' && packet.attributes["EAP-Message"]) {
-        console.log('[Radius] unknown packet type: ', packet.code);
+        logger.error('[Radius] unknown packet type: ', packet.code);
         return undefined;
     }
 
@@ -47,7 +47,7 @@ async function handleMessage(msg) {
     let EAPmessage = packet.attributes['EAP-Message'];
     
     if (Array.isArray(EAPmessage) && !(packet.attributes['EAP-Message'] instanceof Buffer)) {
-        logger.debug('[Radius] Multiple EAP Messages received, concat', EAPmessage.length);
+        logger.debug(`[Radius] Multiple EAP Messages received, concat ${EAPmessage.length}`);
         const allMsgs = EAPmessage;
         EAPmessage = Buffer.concat(allMsgs);
     }
@@ -68,7 +68,7 @@ async function handleMessage(msg) {
                     response = eaptlsHandler.buildEAPTLSResponse(EAPheader.identifier, 13, 0x20, stateID);
                     break;
                 case 3: // NAK
-                    logger.debug('[Radius] got NAK', EAPheader.data);
+                    logger.error(`[Radius] got NAK: ${EAPheader.data}`);
                     response = { code: "Access-Reject", };
                     break;
                 case 13: // EAP-TLS
@@ -105,7 +105,7 @@ radiusserver.start = async () => {
         if (rsp) {
             server.send(rsp, 0, rsp.length, rinfo.port, rinfo.address, (err, _bytes) => {
                 if (err) {
-                    logger.info('[Radius] Error sending response to ', rinfo);
+                    logger.error(`[Radius] Error sending response to: ${rinfo}`);
                 }
             });
         }

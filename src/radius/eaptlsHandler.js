@@ -1,10 +1,7 @@
-import ca from '../crypto/ca.js';
-import msGraphHandler from '../msGraph/msGraphHandler.js';
 import { encodeTunnelPW, startTLSServer } from '../crypto/tlsserver.js';
-
-function tlsHasExportKeyingMaterial(tlsSocket) {
-    return typeof tlsSocket.exportKeyingMaterial === 'function';
-}
+import msGraphHandler from '../msGraph/msGraphHandler.js';
+import ca from '../crypto/ca.js';
+import logger from '../utils/logger.js';
 
 let MAX_RADIUS_ATTRIBUTE_SIZE = 253;
 const eaptlsHandler = {};
@@ -239,7 +236,6 @@ eaptlsHandler.handleTLSmessage = async (identifier, stateID, msg, packet) => {
 
         // Fragemented Package. Gedeelte opslaan en ACK versturen.
         if (decodedFlags.moreFragments === true) {
-            //console.log("FRAGMENT")
             if (decodedFlags.lengthIncluded != true) {
                 var arr = [fragmentData.get(stateID), data];
                 data = Buffer.concat(arr);
@@ -247,6 +243,7 @@ eaptlsHandler.handleTLSmessage = async (identifier, stateID, msg, packet) => {
             fragmentData.set(stateID, data);
             return eaptlsHandler.buildEAPTLSResponse(identifier, 13, 0x00, stateID) // ACK
         }
+        
         if (decodedFlags.lengthIncluded === false && decodedFlags.moreFragments === false) {
             if (fragmentData.get(stateID)) {
                 var arr = [fragmentData.get(stateID), data];
@@ -255,30 +252,23 @@ eaptlsHandler.handleTLSmessage = async (identifier, stateID, msg, packet) => {
             }
         }
 
-        const sendResponsePromise = newDeferredPromise();
-
         let connection = openTLSSockets.get(stateID);
         if (!connection) {
             //console.log("NEW TLS SOCKET");
             connection = startTLSServer();
             openTLSSockets.set(stateID, connection);
             connection.events.on('end', () => {
-                // cleanup socket
-                //console.log('ENDING SOCKET');
                 openTLSSockets.del(stateID);
                 lastProcessedIdentifier.del(stateID);
             });
         } else {
-            //console.log("existing")
             if (!data || data.length === 0) {
-                //console.log("!!!! existing EMPTY !!!!")
-                //console.log(packet.code)
-                //console.log(packet.attributes)
+                // TLS Sessie voltooid en client cert beschikbaar. Authenticatie Afronden.
                 return eaptlsHandler.authResponse(identifier, connection.tls, packet);
-                //sendResponsePromise.resolve(eaptlsHandler.authResponse(identifier, true, connection.tls, packet));
-
             }
         }
+        
+        const sendResponsePromise = newDeferredPromise();
 
         let tlsbuf = Buffer.from([]);
         let sendChunk = Buffer.from([]);
@@ -366,7 +356,7 @@ eaptlsHandler.handleTLSmessage = async (identifier, stateID, msg, packet) => {
         return responseData; // this.buildEAPTTLSResponse(identifier, 21, 0x00, stateID, encryptedResponseData);
     }
     catch (err) {
-        console.log('decoding of EAP-TTLS package failed', msg, err);
+        logger.info(`[EAP-TLS] decoding of EAP-TLS package failed: ${msg} | ${err}`);
         return {
             code: "Access-Reject",
         };
