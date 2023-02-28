@@ -12,15 +12,15 @@
             <div class="row form-group-margin">
                 <div class="col-12 col-md-6 m-0 p-2 input-group">
                     <input type="text" class="form-control field-name" readonly="true"
-                        value='{{ claims.name }}' placeholder="Name">
+                        value='CN: {{ claims.name }}' placeholder="Name">
                 </div>
                  <div class="col-12 col-md-6 m-0 p-2 input-group">
                     <input type="text" class="form-control field-name" readonly="true"
-                        value='{{ claims.preferred_username }}' placeholder="Name">
+                        value='mail: {{ claims.preferred_username }}' placeholder="Name">
                 </div>
                  <div class="col-12 col-md-6 m-0 p-2 input-group">
                     <input type="text" class="form-control field-name" readonly="true"
-                        value='{{ p12file.notAfter }}' placeholder="Name">
+                        value='Geldig tot: {{ p12file.notAfter }}' placeholder="Name">
                 </div>
                 <div class="col-12 col-md-6 m-0 p-2 input-group">
                     <i class="icon-arrow-down mr-3"></i>
