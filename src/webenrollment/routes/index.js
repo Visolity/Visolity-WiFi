@@ -90,7 +90,7 @@ router.get('/download/',
 
             var zip = new AdmZip();
             zip.addFile(`${req.session.account.idTokenClaims.preferred_username}.pfx`, pfx, "PFX");
-            zip.addFile("Visolity-Wifi-CA.pem", Buffer.from(cacert, "utf8"), "CA");
+            zip.addFile("Visolity-Wifi-CA.crt", Buffer.from(cacert, "utf8"), "CA");
             
             res.set('Content-Type','application/octet-stream');
             res.status(200)
