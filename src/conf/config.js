@@ -1,7 +1,7 @@
 import fs from 'fs';
 import dotenv from "dotenv";
 import NodeCache from 'node-cache';
-import logger from './utils/logger.js';
+import logger from '.././utils/logger.js';
 
 // Initialize .ENV
 dotenv.config();
