@@ -118,31 +118,6 @@
         <script src="assets/js/vendor/cookie-notice.min.js"></script>
         <script src="assets/js/vendor/particles.min.js"></script>
         <script src="assets/js/main.js"></script>
-        <script>
-            $('#type').change(function () {
-                opt = $(this).val();
-                if (opt == "apple") {
-                    $("#pfx").collapse('hide');
-                    $("#txt1").collapse('hide');
-                    $("#txt2").collapse('hide');
-                    $("#txt3").collapse('hide');
-                    $("#apple").collapse('show');
-                }
-                if (opt == "txt") {
-                    $("#pfx").collapse('hide');
-                    $("#apple").collapse('hide');
-                    $("#txt1").collapse('show');
-                    $("#txt2").collapse('show');
-                    $("#txt3").collapse('show');
-                }
-                if (opt == "pfx") {
-                    $("#apple").collapse('hide');
-                    $("#txt2").collapse('hide');
-                    $("#txt3").collapse('hide');
-                    $("#pfx").collapse('show');
-                    $("#txt1").collapse('show');
-                }
-            });
-        </script>
+        <script src="assets/js/collapser.js"></script>
     </body>
 </html>

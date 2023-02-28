@@ -27,15 +27,19 @@
                     <select name="type" id="type" class="form-control field-budget">
                         <option value="" disabled>Kies Download</option>
                         <option selected value="apple">IOS / macOS Configuratie Profiel</option>
+                        <option value="zip">Windows Certificaat bundle</option>
                         <option value="pfx">Certificaat in PFX formaat</option>
                         <option value="txt">Certificaat in base64 formaat</option>
                     </select>
                 </div>
                     <div id="apple" class="collapse show col-12 m-0 p-2 input-group">
-                        <textarea class="form-control field-message">Bij het downloaden wordt de configuratie automatisch klaargezet voor installatie. Vervolgens dien je toestemming te geven om het profiel te installeren.&#13;&#10;&#13;&#10;* IOS: "Algemeen > VPN- en apparaatbeheer.&#13;&#10;* MacOS: "Pricacy en beveiliging > Profielen."&#13;&#10;&#13;&#10;Het profiel bevat alle benodigde certificaten om te kunnen verbinden.</textarea>
+                        <textarea class="form-control field-message">Bij het downloaden wordt de configuratie automatisch klaargezet voor installatie. Vervolgens dien je toestemming te geven om het profiel te installeren.&#13;&#10;&#13;&#10;* IOS: "Algemeen > VPN- en apparaatbeheer"&#13;&#10;* MacOS: "Pricacy en beveiliging > Profielen"&#13;&#10;&#13;&#10;Het profiel bevat alle benodigde certificaten om te kunnen verbinden.</textarea>
+                    </div>
+                    <div id="zip" class="collapse col-12 m-0 p-2 input-group">
+                        <textarea class="form-control field-message">Certificaat bundle in zip voor Windows. Bevat de user PFX en de public key van de CA. Beide dienen geinstalleerd te worden.&#13;&#13;Als de certificaten zijn geinstalleerd dan zal Windows bij het verbinden met het "Visolity" netwerk de optie geven om met een certificaat te verbinden. Standaard zal windows ook het certificaat van de Radius server proberen te valideren. Door de public key van de CA uit de bundle toe te voegen aan de "vertrouwde basiscertificeringsinstanties" wordt automatisch ook het Radius certificaat vertrouwd.&#13;&#10;&#13;&#10;LET OP: Bij het installeren van de CA zelf kiezen voor "vertrouwde basiscertificeringsinstanties".</textarea>
                     </div>
                     <div id="pfx" class="collapse col-12 m-0 p-2 input-group">
-                        <textarea class="form-control field-message">BASE64 encoded pfx. Onder windows wordt dit standaard ondersteund.&#13;Op een ander platform moet je wellicht de base64 encoding eraf halen.&#13;&#13;Als dit certificaat is geinstalleerd dan zal Windows bij het verbinden met het "Visolity" netwerk de optie geven om met een certificaat te verbinden. Standaard zal windows ook het certificaat van de Radius server proberen te valideren. Door het root certificaat hieronder toe te voegen aan de "vertrouwde basiscertificeringsinstanties" wordt automatisch ook het Radius certificaat vertrouwd.</textarea>
+                        <textarea class="form-control field-message">Gebruikers certificaat in pfx formaat.&#13;&#10;Voor de volledigheid hieronder ook de public key van de CA in PEM formaat.</textarea>
                     </div>
                     <div id="txt1" class="collapse col-12 m-0 p-2 input-group">
                         <textarea class="form-control field-message">#&#13;&#10;#CA Public Key - Base64 encoded PEM&#13;&#10;#&#13;&#10;{{ cacert }}</textarea>
@@ -44,10 +48,10 @@
                         <textarea class="form-control field-message">#&#13;&#10;#Base64 encoded PEM&#13;&#10;#&#13;&#10;{{ p12file.certificate }}{{ p12file.privateKey }}</textarea>
                     </div>
                     <div id="txt3" class="collapse col-12 m-0 p-2 input-group">
-                        <textarea class="form-control field-message">#&#13;&#10;#Base64 encoded PFX&#13;&#10;#Standaard ondersteund in windows.&#13;&#10;#&#13;&#10;{{ p12file.p12encoded }}</textarea>
+                        <textarea class="form-control field-message">#&#13;&#10;#Base64 encoded PFX&#13;&#10;#Standaard ondersteund in windows.&#13;&#10;{{ p12file.p12encoded }}</textarea>
                     </div>
                 </div>
-                <div class="col-12 input-group m-0 p-2">
+                <div id="download" class="collapse show col-12 input-group m-0 p-2">
                     <button type="submit" class="btn primary-button">Download</button>
                 </div>
         </form>

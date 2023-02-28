@@ -1,5 +1,6 @@
 import fs from 'fs';
 import express from 'express';
+import AdmZip from 'adm-zip';
 var router = express.Router();
 import ca from '../../crypto/ca.js';
 import ProfileGeneration from '../../profile/ProfileGeneration.js';
@@ -78,7 +79,26 @@ router.get('/download/',
                 .send(profile)
         }
 
-        else {
+        if (req.query.type === 'zip') {
+
+            const path = `src/certs/users/${req.session.account.idTokenClaims.preferred_username}.rawp12`
+            const rawp12 = fs.readFileSync(path, 'utf8')
+            const p12file = JSON.parse(rawp12);
+
+            const pfx = new Buffer(p12file.p12encoded, 'base64');
+            const cacert = config.certs.ca.publickey;
+
+            var zip = new AdmZip();
+            zip.addFile(`${req.session.account.idTokenClaims.preferred_username}.pfx`, pfx, "PFX");
+            zip.addFile("Visolity-Wifi-CA.pem", Buffer.from(cacert, "utf8"), "CA");
+            
+            res.set('Content-Type','application/octet-stream');
+            res.status(200)
+                .attachment("Visolity-Wifi-CertBundle.zip")
+                .send(zip.toBuffer())
+        }
+
+        if (req.query.type === 'pfx') {
 
             const path = `src/certs/users/${req.session.account.idTokenClaims.preferred_username}.rawp12`
 
@@ -87,7 +107,7 @@ router.get('/download/',
 
             var pfx = new Buffer(p12file.p12encoded, 'base64');
 
-            res.contentType('text/plain');
+            res.set('Content-Type','application/octet-stream');
             res.status(200)
                 .attachment(`${req.session.account.idTokenClaims.preferred_username}.pfx`)
                 .send(pfx)
