@@ -62,7 +62,20 @@ router.get('/',
             p12file: p12file,
             cacert: cacert,
         });
-    });
+    }
+);
+
+router.get('/renew',
+    isAuthenticated, // check if user is authenticated
+    async function (req, res, next) {
+
+        //Certificaat verwijderen
+        const path = `src/certs/users/${req.session.account.idTokenClaims.preferred_username}.rawp12`;
+        fs.unlinkSync(path);
+
+        res.redirect('/');
+    }
+);
 
 router.get('/download/',
     isAuthenticated, // check if user is authenticated
@@ -91,8 +104,8 @@ router.get('/download/',
             var zip = new AdmZip();
             zip.addFile(`${req.session.account.idTokenClaims.preferred_username}.pfx`, pfx, "PFX");
             zip.addFile("Visolity-Wifi-CA.crt", Buffer.from(cacert, "utf8"), "CA");
-            
-            res.set('Content-Type','application/octet-stream');
+
+            res.set('Content-Type', 'application/octet-stream');
             res.status(200)
                 .attachment("Visolity-Wifi-CertBundle.zip")
                 .send(zip.toBuffer())
@@ -107,7 +120,7 @@ router.get('/download/',
 
             var pfx = new Buffer(p12file.p12encoded, 'base64');
 
-            res.set('Content-Type','application/octet-stream');
+            res.set('Content-Type', 'application/octet-stream');
             res.status(200)
                 .attachment(`${req.session.account.idTokenClaims.preferred_username}.pfx`)
                 .send(pfx)

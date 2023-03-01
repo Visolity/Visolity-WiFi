@@ -3,7 +3,8 @@
         <div class="row text-center intro">
             <div class="col-12">
                 <h2>{{claims.name}}</h2>
-                <p class="text-max-800">Download hier een WiFi configuratie profiel of een gebruikerscertificaat voor toegang tot het
+                <p class="text-max-800">Download hier een WiFi configuratie profiel of een gebruikerscertificaat voor
+                    toegang tot het
                     Visolity WiFi Netwerk.</p>
             </div>
         </div>
@@ -11,18 +12,20 @@
 
             <div class="row form-group-margin">
                 <div class="col-12 col-md-6 m-0 p-2 input-group">
-                    <input type="text" class="form-control field-name" readonly="true"
-                        value='CN: {{ claims.name }}' placeholder="Name">
-                </div>
-                 <div class="col-12 col-md-6 m-0 p-2 input-group">
-                    <input type="text" class="form-control field-name" readonly="true"
-                        value='mail: {{ claims.preferred_username }}' placeholder="Name">
-                </div>
-                 <div class="col-12 col-md-6 m-0 p-2 input-group">
-                    <input type="text" class="form-control field-name" readonly="true"
-                        value='Geldig tot: {{ p12file.notAfter }}' placeholder="Name">
+                    <div class="input-group-prepend"><span class="input-group-text" id="">CN</span></div>
+                    <input type="text" class="form-control field-name" readonly="true" value='{{ claims.name }}' placeholder="Name">
                 </div>
                 <div class="col-12 col-md-6 m-0 p-2 input-group">
+                    <div class="input-group-prepend"><span class="input-group-text" id="">Mail</span></div>
+                    <input type="text" class="form-control field-name" readonly="true" value='{{ claims.preferred_username }}' placeholder="Name">
+                </div>
+                <div class="col-12 col-md-6 m-0 p-2 input-group">
+                    <div class="input-group-prepend"><span class="input-group-text" id="">Geldig tot</span></div>
+                    <input type="text" class="form-control field-name" readonly="true" value='{{ p12file.notAfter }}' placeholder="Name">
+                    <div class="input-group-append"><button type="button" onclick="location.href='/renew';" class="btnref"><span class="input-group"><i title="Vernieuwen" class="icon-refresh left"></i></span></button></div>
+                </div>
+                <div class="col-12 col-md-6 m-0 p-2 input-group">
+                    <div class="input-group-prepend"><span class="input-group-text" id="">Download</span></div>
                     <i class="icon-arrow-down mr-3"></i>
                     <select name="type" id="type" class="form-control field-budget">
                         <option value="" disabled>Kies Download</option>
@@ -32,28 +35,35 @@
                         <option value="txt">Certificaat in base64 formaat</option>
                     </select>
                 </div>
-                    <div id="apple" class="collapse show col-12 m-0 p-2 input-group">
-                        <textarea class="form-control field-message">Bij het downloaden wordt de configuratie automatisch klaargezet voor installatie. Vervolgens dien je toestemming te geven om het profiel te installeren.&#13;&#10;&#13;&#10;* IOS: "Algemeen > VPN- en apparaatbeheer"&#13;&#10;* MacOS: "Pricacy en beveiliging > Profielen"&#13;&#10;&#13;&#10;Het profiel bevat alle benodigde certificaten om te kunnen verbinden.</textarea>
-                    </div>
-                    <div id="zip" class="collapse col-12 m-0 p-2 input-group">
-                        <textarea class="form-control field-message">Certificaat bundle in zip voor Windows. Bevat de user PFX en de public key van de CA. Beide dienen geinstalleerd te worden.&#13;&#13;Als de certificaten zijn geinstalleerd dan zal Windows bij het verbinden met het "Visolity" netwerk de optie geven om met een certificaat te verbinden. Standaard zal windows ook het certificaat van de Radius server proberen te valideren. Door de public key van de CA uit de bundle toe te voegen aan de "vertrouwde basiscertificeringsinstanties" wordt automatisch ook het Radius certificaat vertrouwd.&#13;&#10;&#13;&#10;LET OP: Bij het installeren van de CA zelf kiezen voor "vertrouwde basiscertificeringsinstanties".</textarea>
-                    </div>
-                    <div id="pfx" class="collapse col-12 m-0 p-2 input-group">
-                        <textarea class="form-control field-message">Gebruikers certificaat in pfx formaat.&#13;&#10;Voor de volledigheid hieronder ook de public key van de CA in PEM formaat.</textarea>
-                    </div>
-                    <div id="txt1" class="collapse col-12 m-0 p-2 input-group">
-                        <textarea class="form-control field-message">#&#13;&#10;#CA Public Key - Base64 encoded PEM&#13;&#10;#&#13;&#10;{{ cacert }}</textarea>
-                    </div>
-                    <div id="txt2" class="collapse col-12 m-0 p-2 input-group">
-                        <textarea class="form-control field-message">#&#13;&#10;#Base64 encoded PEM&#13;&#10;#&#13;&#10;{{ p12file.certificate }}{{ p12file.privateKey }}</textarea>
-                    </div>
-                    <div id="txt3" class="collapse col-12 m-0 p-2 input-group">
-                        <textarea class="form-control field-message">#&#13;&#10;#Base64 encoded PFX&#13;&#10;#Standaard ondersteund in windows.&#13;&#10;{{ p12file.p12encoded }}</textarea>
-                    </div>
+                <div id="apple" class="collapse show col-12 m-0 p-2 input-group">
+                    <textarea
+                        class="form-control field-message">Bij het downloaden wordt de configuratie automatisch klaargezet voor installatie. Vervolgens dien je toestemming te geven om het profiel te installeren.&#13;&#10;&#13;&#10;* IOS: "Algemeen > VPN- en apparaatbeheer"&#13;&#10;* MacOS: "Pricacy en beveiliging > Profielen"&#13;&#10;&#13;&#10;Het profiel bevat alle benodigde certificaten om te kunnen verbinden.</textarea>
+                </div>
+                <div id="zip" class="collapse col-12 m-0 p-2 input-group">
+                    <textarea class="form-control field-message">Certificaat bundle in zip voor Windows. Bevat de user PFX en de public key van de CA. Beide dienen geinstalleerd te worden.&#13;&#13;Als de certificaten zijn geinstalleerd dan zal Windows bij het verbinden met het "Visolity" netwerk de optie geven om met een certificaat te verbinden. Standaard zal windows ook het certificaat van de Radius server proberen te valideren. Door de public key van de CA uit de bundle toe te voegen aan de "vertrouwde basiscertificeringsinstanties" wordt automatisch ook het Radius certificaat vertrouwd.&#13;&#10;&#13;&#10;LET OP: Bij het installeren van de CA zelf kiezen voor "vertrouwde basiscertificeringsinstanties".</textarea>
+                </div>
+                <div id="pfx" class="collapse col-12 m-0 p-2 input-group">
+                    <textarea class="form-control field-message">Gebruikers certificaat in pfx formaat.&#13;&#10;Voor de volledigheid hieronder ook de public key van de CA in PEM formaat.</textarea>
+                </div>
+                <div id="txt1" class="collapse col-12 m-0 p-2 input-group">
+                    <textarea class="form-control field-message">#&#13;&#10;#CA Public Key - Base64 encoded PEM&#13;&#10;#&#13;&#10;{{ cacert }}</textarea>
+                </div>
+                <div id="txt2" class="collapse col-12 m-0 p-2 input-group">
+                    <textarea class="form-control field-message">#&#13;&#10;#Base64 encoded PEM&#13;&#10;#&#13;&#10;{{ p12file.certificate }}{{ p12file.privateKey }}</textarea>
+                </div>
+                <div id="txt3" class="collapse col-12 m-0 p-2 input-group">
+                    <textarea class="form-control field-message">#&#13;&#10;#Base64 encoded PFX&#13;&#10;#Standaard ondersteund in windows.&#13;&#10;{{ p12file.p12encoded }}</textarea>
                 </div>
                 <div id="download" class="collapse show col-12 input-group m-0 p-2">
                     <button type="submit" class="btn primary-button">Download</button>
                 </div>
+            </div>
         </form>
     </div>
 </section>
+<script>
+function my_button_click_handler()
+{
+alert('Button Clcked');
+}
+</script>
