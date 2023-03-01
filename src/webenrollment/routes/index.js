@@ -1,12 +1,8 @@
-import fs from 'fs';
 import express from 'express';
 import AdmZip from 'adm-zip';
 var router = express.Router();
-import ca from '../../crypto/ca.js';
 import ProfileGeneration from '../../profile/ProfileGeneration.js';
-
-const GRAPH_ME_ENDPOINT = process.env.GRAPH_API_ENDPOINT + "v1.0/me";
-import profile from 'console';
+import ca from '../../crypto/ca.js';
 
 // custom middleware to check auth state
 function isAuthenticated(req, res, next) {
@@ -17,113 +13,54 @@ function isAuthenticated(req, res, next) {
     next();
 };
 
-router.get('/',
+router.get(['/','/renew'],
     isAuthenticated, // check if user is authenticated
     async function (req, res, next) {
-
-        // CA cert
-        const cacert = config.certs.ca.publickey;
-
-        var p12file = '';
-
-        //Certificaat Aanwezig??
-        const path = `src/certs/users/${req.session.account.idTokenClaims.preferred_username}.rawp12`
-
-        try {
-            if (fs.existsSync(path)) {
-                const rawp12 = fs.readFileSync(path, 'utf8')
-                p12file = JSON.parse(rawp12);
-
-                // Geldig tegen huidige CA en nog niet verlopen??
-                if (ca.ValidateUserCert(p12file.certificate) === false) {
-                    p12file = '';
-                }
-            }
-            if (p12file === '') {
-                p12file = ca.CreateUserCert(
-                    req.session.account.idTokenClaims.name,
-                    req.session.account.idTokenClaims.preferred_username,
-                    [req.session.account.idTokenClaims.preferred_username]);
-                fs.writeFileSync(path, JSON.stringify(p12file))
-            }
-
-        } catch (err) {
-            console.error(err)
-        }
-
-
-        const claims = {
-            name: req.session.account.idTokenClaims.name,
-            preferred_username: req.session.account.idTokenClaims.preferred_username,
-        }
+        const renew = req.path === '/renew' ? true : false;
 
         res.render('index', {
-            claims: claims,
-            p12file: p12file,
-            cacert: cacert,
+            claims: req.session.account.idTokenClaims,
+            usercert: ca.getUserCert(req.session.account.idTokenClaims.preferred_username, req.session.account.idTokenClaims, renew),
+            cacert: config.certs.ca.publickey,
         });
-    }
-);
-
-router.get('/renew',
-    isAuthenticated, // check if user is authenticated
-    async function (req, res, next) {
-
-        //Certificaat verwijderen
-        const path = `src/certs/users/${req.session.account.idTokenClaims.preferred_username}.rawp12`;
-        fs.unlinkSync(path);
-
-        res.redirect('/');
     }
 );
 
 router.get('/download/',
     isAuthenticated, // check if user is authenticated
-
     async function (req, res, next) {
+        var name;
+        var payload;
+        var contentType = 'text/plain';
 
         if (req.query.type === 'apple') {
-
-            const profile = ProfileGeneration.Create(req.session.account.idTokenClaims.name, req.session.account.idTokenClaims.preferred_username, req.query.type);
-
-            res.contentType('text/plain');
-            res.status(200)
-                .attachment(`Visolity-Wifi.mobileconfig`)
-                .send(profile)
+            name = "Visolity-Wifi.mobileconfig";
+            payload = ProfileGeneration.Create(req.session.account.idTokenClaims.name, req.session.account.idTokenClaims.preferred_username);
         }
 
-        if (req.query.type === 'zip') {
+        else {
+            const usercert = ca.getUserCert(req.session.account.idTokenClaims.preferred_username);
+            const pfx = new Buffer(usercert.p12encoded, 'base64');
+           
+            contentType = 'application/octet-stream';
 
-            const path = `src/certs/users/${req.session.account.idTokenClaims.preferred_username}.rawp12`
-            const rawp12 = fs.readFileSync(path, 'utf8')
-            const p12file = JSON.parse(rawp12);
+            if (req.query.type === 'zip') {
 
-            const pfx = new Buffer(p12file.p12encoded, 'base64');
-            const cacert = config.certs.ca.publickey;
+                var zip = new AdmZip();
+                zip.addFile(`${req.session.account.idTokenClaims.preferred_username}.pfx`, pfx, "PFX");
+                zip.addFile("Visolity-Wifi-CA.crt", Buffer.from(config.certs.ca.publickey, "utf8"), "CA");
 
-            var zip = new AdmZip();
-            zip.addFile(`${req.session.account.idTokenClaims.preferred_username}.pfx`, pfx, "PFX");
-            zip.addFile("Visolity-Wifi-CA.crt", Buffer.from(cacert, "utf8"), "CA");
+                name = "Visolity-Wifi-CertBundle.zip";
+                payload = zip.toBuffer();
+            }
 
-            res.set('Content-Type', 'application/octet-stream');
-            res.status(200)
-                .attachment("Visolity-Wifi-CertBundle.zip")
-                .send(zip.toBuffer())
-        }
-
-        if (req.query.type === 'pfx') {
-
-            const path = `src/certs/users/${req.session.account.idTokenClaims.preferred_username}.rawp12`
-
-            const rawp12 = fs.readFileSync(path, 'utf8')
-            const p12file = JSON.parse(rawp12);
-
-            var pfx = new Buffer(p12file.p12encoded, 'base64');
-
-            res.set('Content-Type', 'application/octet-stream');
-            res.status(200)
-                .attachment(`${req.session.account.idTokenClaims.preferred_username}.pfx`)
-                .send(pfx)
+            if (req.query.type === 'pfx') {
+                name = `${req.session.account.idTokenClaims.preferred_username}.pfx`;
+                payload = pfx
+            }
+           
+            res.set('Content-Type', contentType);
+            res.status(200).attachment(name).send(payload)
         }
     }
 );

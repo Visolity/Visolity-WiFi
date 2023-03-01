@@ -1,23 +1,17 @@
 import fs from 'fs';
+import ca from '../crypto/ca.js';
 
 class ProfileGeneration {
 	
-	static Create(name, username, platform) {
+	static Create(name, username) {
 
-		// p12 data in base64 voor username
-		const p12path = `src/certs/users/${username}.rawp12`
-        const rawp12 = fs.readFileSync(p12path, 'utf8')
-        const p12file = JSON.parse(rawp12);
-		const base64p12 = p12file.p12encoded
+		const usercert = ca.getUserCert(username);	// User Cert
+		const base64ca = config.certs.ca.publickey;	// CA cert
 
-		// CA
-		const base64ca = config.certs.ca.publickey;
-
-		// Template config
-		const path = `src/profile/${platform}/template.xml`
+		const path = `src/profile/apple/template.xml`
         const template = fs.readFileSync(path, 'utf8')
 
-		const mod1 = template.replace("BASE64P12", base64p12);
+		const mod1 = template.replace("BASE64P12", usercert.p12encoded);
 		const mod2 = mod1.replace("BASE64_CA", base64ca.toString('base64'));
 		const payload = mod2.replace("USERNAME", name);
 

@@ -1,7 +1,7 @@
 .env
 node_modules
 logs/logfile
-src/certs/users/*.rawp12
+src/certs/users/*.json
 src/certs/ca/ca.key
 src/certs/ca/ca.pem
 src/certs/ca/index.txt

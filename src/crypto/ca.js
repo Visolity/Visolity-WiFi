@@ -1,4 +1,5 @@
 import forge from 'node-forge';
+import fs from 'fs';
 
 const makeNumberPositive = (hexString) => {
 	let mostSignificativeHexDigitAsInt = parseInt(hexString[0], 16);
@@ -48,6 +49,45 @@ class ca {
 		return { certificate: pemCert, privateKey: pemKey };
 	}
 
+	static getUserCert(user, claims = false, renew = false) {
+
+		var usercert = '';
+        const path = `src/certs/users/${user}.json`
+
+			//Certificaat Aanwezig??
+            if (fs.existsSync(path)) {
+                const raw = fs.readFileSync(path, 'utf8')
+                usercert = JSON.parse(raw);
+
+                // Geldig tegen huidige CA en nog niet verlopen??
+                if (ca.ValidateUserCert(usercert.certificate) === false || renew === true) {
+					renew = usercert;
+					usercert = '';
+                }
+            }
+
+			// Certificaat niet aanwezig of verlopen
+			if (usercert === '') {
+                usercert = ca.CreateUserCert(
+                    claims.name,
+                    claims.preferred_username,
+                    [claims.preferred_username],
+					renew
+					);
+                fs.writeFileSync(path, JSON.stringify(usercert, null, 2))
+            }
+		
+			
+			return usercert;
+	}
+
+	static getRevokedUserCerts(user) {
+        const path = `src/certs/users/${user}.json`
+        const usercert = fs.readFileSync(path, 'utf8')
+		const revoked = JSON.parse(usercert);
+		return revoked.revokedcerts;
+	}
+
 	static ValidateUserCert(pem) {
 
 		// CA ObjectStore
@@ -82,11 +122,25 @@ class ca {
 			return false;
 		}
 
+		// ToDo: Revoked?
+		/*
+		var revokedcerts = ca.getRevokedUserCerts(certificate.subject.getField('E').value)
+		
+		revokedcerts.forEach((rcert) => {
+			console.log("check")
+			console.log(pem.toString().Replace("").Replace("\n", ""))	
+			/*
+			if (rcert.toString().Replace("\n", "") === pem.toString().Replace("\n", "")) {
+				console.log('!!!!JA!!!!!')
+			}
+		});
+		*/
+
 		logger.info(`[Visolity-CA][CN=${CN}] User Certificate is valid.`);
 		return true;
 	}
 
-	static CreateUserCert(hostCertCN, username, validDomains) {
+	static CreateUserCert(hostCertCN, username, validDomains, renew = false) {
 		if (!hostCertCN.toString().trim()) throw new Error('"hostCertCN" must be a String');
 		if (!Array.isArray(validDomains)) throw new Error('"validDomains" must be an Array of Strings');
 
@@ -156,10 +210,23 @@ class ca {
 		//fs.promises.writeFile('certs/cert.p12', pkcsAsn1Bytes, {encoding: 'binary'});
 
 		const p12encoded = forge.util.encode64(pkcsAsn1Bytes); // Direct buffer which can be sent to s3
+
+		var revokedcerts = [];
+
+		if (renew != false) {
+			revokedcerts.push(renew.certificate)
+			revokedcerts.push(...renew.revokedcerts)
+		}
 		
 		logger.info(`[Visolity-CA][CN=${hostCertCN}] New User Certificate created.`);
 
-		return { p12encoded: p12encoded, certificate: pemHostCert, privateKey: pemHostKey, notAfter: newHostCert.validity.notBefore, notAfter: newHostCert.validity.notAfter };
+		return { 
+			p12encoded: p12encoded, 
+			certificate: pemHostCert, 
+			privateKey: pemHostKey, 
+			notAfter: newHostCert.validity.notAfter,
+			revokedcerts: revokedcerts  
+		};
 	}
 }
 

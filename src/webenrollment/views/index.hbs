@@ -21,7 +21,7 @@
                 </div>
                 <div class="col-12 col-md-6 m-0 p-2 input-group">
                     <div class="input-group-prepend"><span class="input-group-text" id="">Geldig tot</span></div>
-                    <input type="text" class="form-control field-name" readonly="true" value='{{ p12file.notAfter }}' placeholder="Name">
+                    <input type="text" class="form-control field-name" readonly="true" value='{{ usercert.notAfter }}' placeholder="Name">
                     <div class="input-group-append"><button type="button" onclick="location.href='/renew';" class="btnref"><span class="input-group"><i title="Vernieuwen" class="icon-refresh left"></i></span></button></div>
                 </div>
                 <div class="col-12 col-md-6 m-0 p-2 input-group">
@@ -49,10 +49,10 @@
                     <textarea class="form-control field-message">#&#13;&#10;#CA Public Key - Base64 encoded PEM&#13;&#10;#&#13;&#10;{{ cacert }}</textarea>
                 </div>
                 <div id="txt2" class="collapse col-12 m-0 p-2 input-group">
-                    <textarea class="form-control field-message">#&#13;&#10;#Base64 encoded PEM&#13;&#10;#&#13;&#10;{{ p12file.certificate }}{{ p12file.privateKey }}</textarea>
+                    <textarea class="form-control field-message">#&#13;&#10;#Base64 encoded PEM&#13;&#10;#&#13;&#10;{{ usercert.certificate }}{{ usercert.privateKey }}</textarea>
                 </div>
                 <div id="txt3" class="collapse col-12 m-0 p-2 input-group">
-                    <textarea class="form-control field-message">#&#13;&#10;#Base64 encoded PFX&#13;&#10;#Standaard ondersteund in windows.&#13;&#10;{{ p12file.p12encoded }}</textarea>
+                    <textarea class="form-control field-message">#&#13;&#10;#Base64 encoded PFX&#13;&#10;#Standaard ondersteund in windows.&#13;&#10;{{ usercert.p12encoded }}</textarea>
                 </div>
                 <div id="download" class="collapse show col-12 input-group m-0 p-2">
                     <button type="submit" class="btn primary-button">Download</button>
