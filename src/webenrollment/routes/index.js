@@ -13,7 +13,7 @@ function isAuthenticated(req, res, next) {
     next();
 };
 
-router.get(['/','/renew'],
+router.get(['/', '/renew'],
     isAuthenticated, // check if user is authenticated
     async function (req, res, next) {
         const renew = req.path === '/renew' ? true : false;
@@ -41,7 +41,7 @@ router.get('/download/',
         else {
             const usercert = ca.getUserCert(req.session.account.idTokenClaims.preferred_username);
             const pfx = new Buffer(usercert.p12encoded, 'base64');
-           
+
             contentType = 'application/octet-stream';
 
             if (req.query.type === 'zip') {
@@ -58,10 +58,9 @@ router.get('/download/',
                 name = `${req.session.account.idTokenClaims.preferred_username}.pfx`;
                 payload = pfx
             }
-           
-            res.set('Content-Type', contentType);
-            res.status(200).attachment(name).send(payload)
         }
+        res.set('Content-Type', contentType);
+        res.status(200).attachment(name).send(payload)
     }
 );
 
