@@ -4,8 +4,7 @@
             <div class="col-12">
                 <h2>{{claims.name}}</h2>
                 <p class="text-max-800">Download hier een WiFi configuratie profiel of een gebruikerscertificaat voor
-                    toegang tot het
-                    Visolity WiFi Netwerk.</p>
+                    toegang tot het netwerk met SSID {{ ssid }}.</p>
             </div>
         </div>
         <form method='GET' action="/download" id="leverage-simple-form" class="leverage-simple-form">
@@ -25,7 +24,7 @@
                     <div class="input-group-append"><button type="button" onclick="location.href='/renew';" class="btnref"><span class="input-group"><i title="Vernieuwen" class="icon-refresh left"></i></span></button></div>
                 </div>
                 <div class="col-12 col-md-6 m-0 p-2 input-group">
-                    <div class="input-group-prepend"><span class="input-group-text" id="">Download</span></div>
+                    <div class="input-group-prepend"><span class="input-group-text" id="">Type</span></div>
                     <i class="icon-arrow-down mr-3"></i>
                     <select name="type" id="type" class="form-control field-budget">
                         <option value="" disabled>Kies Download</option>

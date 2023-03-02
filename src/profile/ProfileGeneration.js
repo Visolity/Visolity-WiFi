@@ -11,9 +11,10 @@ class ProfileGeneration {
 		const path = `src/profile/apple/template.xml`
         const template = fs.readFileSync(path, 'utf8')
 
-		const mod1 = template.replace("BASE64P12", usercert.p12encoded);
-		const mod2 = mod1.replace("BASE64_CA", base64ca.toString('base64'));
-		const payload = mod2.replace("USERNAME", name);
+		const mod1 = template.replace("var_USERCERT", usercert.p12encoded);
+		const mod2 = mod1.replace("var_CACERT", base64ca.toString('base64'));
+		const mod3 = mod2.replace("var_SSID", config.wlan.ssid);
+		const payload = mod3.replace("var_USERNAME", name);
 
 		return payload;
 	}

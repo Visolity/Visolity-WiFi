@@ -19,6 +19,7 @@ router.get(['/', '/renew'],
         const renew = req.path === '/renew' ? true : false;
 
         res.render('index', {
+            ssid: config.wlan.ssid,
             claims: req.session.account.idTokenClaims,
             usercert: ca.getUserCert(req.session.account.idTokenClaims.preferred_username, req.session.account.idTokenClaims, renew),
             cacert: config.certs.ca.publickey,

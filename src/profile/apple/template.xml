@@ -55,7 +55,7 @@
 			<key>ProxyType</key>
 			<string>None</string>
 			<key>SSID_STR</key>
-			<string>Visolity</string>
+			<string>var_SSID</string>
 		</dict>
 		<dict>
 			<key>Password</key>
@@ -64,12 +64,12 @@
 			<string>usercert.pfx</string>
 			<key>PayloadContent</key>
 			<data>
-			BASE64P12	
+			var_USERCERT	
 			</data>
 			<key>PayloadDescription</key>
 			<string>Een certificaat met de PKCS#12-structuur toevoegen</string>
 			<key>PayloadDisplayName</key>
-			<string>USERNAME</string>
+			<string>var_USERNAME</string>
 			<key>PayloadIdentifier</key>
 			<string>com.apple.security.pkcs12.C0563EBC-1378-4EC7-AC20-9958670BBD4F</string>
 			<key>PayloadType</key>
@@ -84,7 +84,7 @@
 			<string>CA.cer</string>
 			<key>PayloadContent</key>
 			<data>
-			BASE64_CA
+			var_CACERT
 			</data>
 			<key>PayloadDescription</key>
 			<string>Een CA-rootcertificaat toevoegen</string>

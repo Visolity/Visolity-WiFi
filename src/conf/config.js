@@ -14,6 +14,8 @@ global.AzureADUsers = [];
 
 // Config
 global.config = {};
+config.wlan = {};
+config.wlan.ssid = process.env.SSID;
 config.radius = {};
 config.radius.secret =  process.env.RADIUS_SECRET;
 
